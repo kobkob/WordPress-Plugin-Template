@@ -441,69 +441,24 @@ if [[ "$INTERACTIVE_MODE" == false ]]; then
     # Create the destination directory if it doesn't exist
     mkdir -p "$(dirname "$DESTINATION_DIR")"
     
-    # Set environment variables for non-interactive script
-    export NAME="$PLUGIN_NAME"
-    export FOLDER="$DESTINATION_DIR"
-    export DESCRIPTION="${PLUGIN_DESCRIPTION:-A modern WordPress plugin created from template}"
-    export AUTHOR="${PLUGIN_AUTHOR:-$(git config --global user.name 2>/dev/null || echo 'Plugin Author')}"
-    export AUTHOR_EMAIL="${PLUGIN_AUTHOR_EMAIL:-$(git config --global user.email 2>/dev/null || echo 'author@example.com')}"
-    export PLUGIN_URI="$PLUGIN_URI"
-    export GITHUB_ACTIONS="$INCLUDE_GITHUB_ACTIONS"
-    export PHPUNIT="$INCLUDE_PHPUNIT"
-    export PHPCS="$INCLUDE_PHPCS"
-    export FEATURE_API="$INCLUDE_FEATURE_API"
-    export REST_API="$INCLUDE_REST_API"
-    export DOCKER_ENV="$INCLUDE_DOCKER"
-    export AGILE_FRAMEWORK="$INCLUDE_AGILE"
-    export NEWREPO="$CREATE_NEW_REPO"
+    # Set environment variables for non-interactive mode
+    export NONINTERACTIVE_NAME="$PLUGIN_NAME"
+    export NONINTERACTIVE_FOLDER="$DESTINATION_DIR"
+    export NONINTERACTIVE_DESCRIPTION="${PLUGIN_DESCRIPTION:-A modern WordPress plugin created from template}"
+    export NONINTERACTIVE_AUTHOR="${PLUGIN_AUTHOR:-$(git config --global user.name 2>/dev/null || echo 'Plugin Author')}"
+    export NONINTERACTIVE_AUTHOR_EMAIL="${PLUGIN_AUTHOR_EMAIL:-$(git config --global user.email 2>/dev/null || echo 'author@example.com')}"
+    export NONINTERACTIVE_PLUGIN_URI="$PLUGIN_URI"
+    export NONINTERACTIVE_GITHUB_ACTIONS="$INCLUDE_GITHUB_ACTIONS"
+    export NONINTERACTIVE_PHPUNIT="$INCLUDE_PHPUNIT"
+    export NONINTERACTIVE_PHPCS="$INCLUDE_PHPCS"
+    export NONINTERACTIVE_FEATURE_API="$INCLUDE_FEATURE_API"
+    export NONINTERACTIVE_REST_API="$INCLUDE_REST_API"
+    export NONINTERACTIVE_DOCKER_ENV="$INCLUDE_DOCKER"
+    export NONINTERACTIVE_AGILE_FRAMEWORK="$INCLUDE_AGILE"
+    export NONINTERACTIVE_NEWREPO="$CREATE_NEW_REPO"
     
-    # Create a temporary script for non-interactive execution
-    cat > create-plugin-noninteractive.sh << 'EOF'
-#!/bin/bash
-
-# Set non-interactive defaults from environment or use defaults
-NAME="${NAME:-My Plugin}"
-FOLDER="${FOLDER:-./my-plugin}"
-DESCRIPTION="${DESCRIPTION:-A modern WordPress plugin}"
-AUTHOR="${AUTHOR:-Plugin Author}"
-AUTHOR_EMAIL="${AUTHOR_EMAIL:-author@example.com}"
-PLUGIN_URI="${PLUGIN_URI:-}"
-GITHUB_ACTIONS="${GITHUB_ACTIONS:-y}"
-PHPUNIT="${PHPUNIT:-y}"
-PHPCS="${PHPCS:-y}"
-FEATURE_API="${FEATURE_API:-y}"
-REST_API="${REST_API:-y}"
-DOCKER_ENV="${DOCKER_ENV:-y}"
-AGILE_FRAMEWORK="${AGILE_FRAMEWORK:-y}"
-NEWREPO="${NEWREPO:-y}"
-
-# Create input file with all responses (matching create-plugin.sh input sequence)
-cat > input-responses.txt << INPUT_EOF
-$NAME
-$FOLDER
-$DESCRIPTION
-$AUTHOR
-$AUTHOR_EMAIL
-$PLUGIN_URI
-$GITHUB_ACTIONS
-$PHPUNIT
-$PHPCS
-$FEATURE_API
-$REST_API
-$DOCKER_ENV
-$AGILE_FRAMEWORK
-$NEWREPO
-INPUT_EOF
-
-# Run the original script with input file
-./create-plugin.sh < input-responses.txt
-
-# Clean up
-rm -f input-responses.txt
-EOF
-    
-    chmod +x create-plugin-noninteractive.sh
-    ./create-plugin-noninteractive.sh
+    # Run the create-plugin.sh script directly
+    ./create-plugin.sh
     
 else
     # Interactive mode - run the standard creation script

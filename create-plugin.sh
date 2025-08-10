@@ -85,11 +85,22 @@ fi
 print_message $GREEN "✓ All dependencies found"
 echo
 
-# Function to read input (handles piped execution)
+# Function to read input (handles piped execution and environment variables)
 read_input() {
     local prompt="$1"
     local var_name="$2"
     local default="$3"
+    
+    # Check if we're in non-interactive mode (environment variable is set)
+    local env_var_name="NONINTERACTIVE_${var_name}"
+    local env_value="${!env_var_name}"
+    
+    if [[ -n "$env_value" ]]; then
+        # Use environment variable value
+        printf "$prompt$env_value\n"
+        eval "$var_name='$env_value'"
+        return
+    fi
     
     # Try to read from /dev/tty first (for piped execution), fall back to stdin
     if [ -t 0 ]; then
@@ -176,7 +187,18 @@ DEST_DIR="$FOLDER/$SLUG"
 
 # Copy template files
 print_message $YELLOW "Copying template files..."
-cp -r . "$DEST_DIR"
+
+# Check if destination is a subdirectory of current directory
+if [[ "$(realpath "$DEST_DIR" 2>/dev/null)" == "$(realpath . 2>/dev/null)"/* ]]; then
+    # Destination is a subdirectory, use a temporary directory
+    TEMP_COPY_DIR=$(mktemp -d)
+    cp -r . "$TEMP_COPY_DIR/template"
+    mv "$TEMP_COPY_DIR/template" "$DEST_DIR"
+    rmdir "$TEMP_COPY_DIR"
+else
+    # Safe to copy directly
+    cp -r . "$DEST_DIR"
+fi
 
 cd "$DEST_DIR"
 
