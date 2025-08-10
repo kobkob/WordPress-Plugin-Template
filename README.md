@@ -2,7 +2,7 @@
 
 A modern, robust, and GPL-licensed code template for creating standards-compliant WordPress plugins with professional development practices.
 
-[![CI](https://github.com/kobkob/WordPress-Plugin-Template/actions/workflows/ci.yml/badge.svg)](https://github.com/username/WordPress-Plugin-Template/actions/workflows/ci.yml)
+[![CI](https://github.com/kobkob/WordPress-Plugin-Template/actions/workflows/ci.yml/badge.svg)](https://github.com/kobkob/WordPress-Plugin-Template/actions/workflows/ci.yml)
 [![PHP Version](https://img.shields.io/badge/PHP-8.1%2B-blue.svg)](https://php.net)
 [![WordPress Version](https://img.shields.io/badge/WordPress-6.0%2B-blue.svg)](https://wordpress.org)
 [![License](https://img.shields.io/badge/License-GPL--3.0%2B-green.svg)](LICENSE)
@@ -62,7 +62,7 @@ The enhanced `create-plugin.sh` script automates the entire setup process:
 
 ```bash
 # Clone this repository
-git clone https://github.com/username/WordPress-Plugin-Template.git
+git clone https://github.com/kobkob/WordPress-Plugin-Template.git
 cd WordPress-Plugin-Template
 
 # Run the creation script
@@ -377,7 +377,7 @@ We welcome contributions! Please:
 
 ```bash
 # Clone your fork
-git clone https://github.com/yourusername/WordPress-Plugin-Template.git
+git clone https://github.com/kobkob/WordPress-Plugin-Template.git
 cd WordPress-Plugin-Template
 
 # Install dependencies
@@ -395,8 +395,8 @@ This template is released under the [GPL-3.0+ License](LICENSE). Feel free to us
 ## 🆘 Support
 
 - **Documentation**: Check this README and inline code comments
-- **Issues**: [GitHub Issues](https://github.com/username/WordPress-Plugin-Template/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/username/WordPress-Plugin-Template/discussions)
+- **Issues**: [GitHub Issues](https://github.com/kobkob/WordPress-Plugin-Template/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/kobkob/WordPress-Plugin-Template/discussions)
 - **WordPress Forums**: [WordPress Plugin Development](https://wordpress.org/support/forum/plugins/)
 
 ## 🎯 Roadmap

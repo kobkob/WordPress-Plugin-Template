@@ -2,7 +2,7 @@
 /*
  * Plugin Name: WordPress Plugin Template
  * Version: 1.0
- * Plugin URI: http://www.hughlashbrooke.com/
+ * Plugin URI: https://github.com/kobkob/WordPress-Plugin-Template
  * Description: This is your starter template for your next WordPress plugin.
  * Author: Hugh Lashbrooke
  * Author URI: http://www.hughlashbrooke.com/

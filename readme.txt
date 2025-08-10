@@ -1,6 +1,6 @@
 === WordPress Plugin Template ===
-Contributors: hlashbrooke
-Donate link: http://www.hughlashbrooke.com/donate
+Contributors: kobkob
+Donate link: https://github.com/kobkob/WordPress-Plugin-Template
 Tags: wordpress, plugin, template
 Requires at least: 3.9
 Tested up to: 4.0

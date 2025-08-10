@@ -219,7 +219,7 @@ for file in "${files_to_update[@]}"; do
             replace_in_file "$file" "This is your starter template for your next WordPress plugin." "$DESCRIPTION"
         fi
         if [[ -n "$PLUGIN_URI" && "$file" == "$SLUG.php" ]]; then
-            replace_in_file "$file" "http://www.hughlashbrooke.com/" "$PLUGIN_URI"
+            replace_in_file "$file" "https://github.com/kobkob/WordPress-Plugin-Template" "$PLUGIN_URI"
         fi
     fi
 done
@@ -574,7 +574,7 @@ install_wp() {
 		tar --strip-components=1 -zxmf /tmp/wordpress.tar.gz -C $WP_CORE_DIR
 	fi
 
-	download https://raw.github.com/markoheijnen/wp-mysqli/master/db.php $WP_CORE_DIR/wp-content/db.php
+	download https://raw.githubusercontent.com/markoheijnen/wp-mysqli/master/db.php $WP_CORE_DIR/wp-content/db.php
 }
 
 install_test_suite() {

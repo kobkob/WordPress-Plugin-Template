@@ -44,7 +44,7 @@ git --version
 
 1. **Clone the template:**
    ```bash
-   git clone https://github.com/username/WordPress-Plugin-Template.git
+   git clone https://github.com/kobkob/WordPress-Plugin-Template.git
    cd WordPress-Plugin-Template
    ```
 
@@ -349,7 +349,7 @@ npm install
 ### Getting Help
 
 - **Documentation**: Check README.md and inline comments
-- **Issues**: [GitHub Issues](https://github.com/username/WordPress-Plugin-Template/issues)
+- **Issues**: [GitHub Issues](https://github.com/kobkob/WordPress-Plugin-Template/issues)
 - **Community**: [WordPress Plugin Development Forum](https://wordpress.org/support/forum/plugins/)
 
 ## 📚 Resources

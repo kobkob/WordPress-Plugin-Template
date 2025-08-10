@@ -316,8 +316,8 @@ Contributors will be:
 ## 📞 Contact
 
 - **Maintainer**: [Your Name](mailto:your-email@example.com)
-- **Project Repository**: https://github.com/username/WordPress-Plugin-Template
-- **Issues**: https://github.com/username/WordPress-Plugin-Template/issues
+- **Project Repository**: https://github.com/kobkob/WordPress-Plugin-Template
+- **Issues**: https://github.com/kobkob/WordPress-Plugin-Template/issues
 
 ---
 
