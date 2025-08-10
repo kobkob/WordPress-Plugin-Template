@@ -218,7 +218,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial plugin template structure
 - Basic WordPress plugin architecture
-- GPL-2.0+ license
+- GPL-3.0+ license
 - README with basic usage instructions
 - Plugin creation shell script
 

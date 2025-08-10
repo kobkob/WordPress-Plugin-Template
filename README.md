@@ -5,7 +5,7 @@ A modern, robust, and GPL-licensed code template for creating standards-complian
 [![CI](https://github.com/kobkob/WordPress-Plugin-Template/actions/workflows/ci.yml/badge.svg)](https://github.com/username/WordPress-Plugin-Template/actions/workflows/ci.yml)
 [![PHP Version](https://img.shields.io/badge/PHP-8.1%2B-blue.svg)](https://php.net)
 [![WordPress Version](https://img.shields.io/badge/WordPress-6.0%2B-blue.svg)](https://wordpress.org)
-[![License](https://img.shields.io/badge/License-GPL--2.0%2B-green.svg)](LICENSE)
+[![License](https://img.shields.io/badge/License-GPL--3.0%2B-green.svg)](LICENSE)
 
 ## 🌟 Features
 
@@ -390,7 +390,7 @@ composer require --dev dealerdirect/phpcodesniffer-composer-installer
 
 ## 📄 License
 
-This template is released under the [GPL-2.0+ License](LICENSE). Feel free to use it for any project, commercial or personal.
+This template is released under the [GPL-3.0+ License](LICENSE). Feel free to use it for any project, commercial or personal.
 
 ## 🆘 Support
 

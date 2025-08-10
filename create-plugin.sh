@@ -232,7 +232,7 @@ if [[ "$PHPUNIT" == "y" || "$PHPCS" == "y" || "$FEATURE_API" == "y" ]]; then
     "name": "$(echo "$AUTHOR_EMAIL" | cut -d'@' -f1)/$SLUG",
     "description": "$DESCRIPTION",
     "type": "wordpress-plugin",
-    "license": "GPL-2.0-or-later",
+    "license": "GPL-3.0-or-later",
     "authors": [
         {
             "name": "$AUTHOR",

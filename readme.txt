@@ -5,8 +5,8 @@ Tags: wordpress, plugin, template
 Requires at least: 3.9
 Tested up to: 4.0
 Stable tag: 1.0
-License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+License: GPL-3.0-or-later
+License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
 This is where you craft a short, punchy description of your plugin
 
