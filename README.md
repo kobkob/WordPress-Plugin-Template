@@ -455,10 +455,11 @@ This template is released under the [GPL-3.0+ License](LICENSE). Feel free to us
 ## 🎯 Roadmap
 
 - [x] **PHP 8.4** compatibility testing
-- [ ] **Block editor** integration examples
 - [x] **REST API** endpoints template
-- [ ] **WP-CLI** command examples
 - [ ] **Docker** development environment
+- [ ] **Agile**, **XP** Methodology
+- [ ] **Block editor** integration examples
+- [ ] **WP-CLI** command examples
 - [ ] **Automated** plugin submission tools
 
 ---
