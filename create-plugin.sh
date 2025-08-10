@@ -650,7 +650,8 @@ EOF
         replace_in_file "tests/unit/test-${SLUG}-rest-api-unit.php" "Test_WordPress_Plugin_Template_REST_API_Unit" "Test_${CLASS}_REST_API_Unit"
     fi
 
-    # Create install script for WordPress tests
+    # Create bin directory and install script for WordPress tests
+    mkdir -p bin
     cat > bin/install-wp-tests.sh << 'EOF'
 #!/usr/bin/env bash
 
@@ -784,7 +785,6 @@ install_db
 EOF
 
     chmod +x bin/install-wp-tests.sh
-    mkdir -p bin
 fi
 
 # Create GitHub Actions workflow
