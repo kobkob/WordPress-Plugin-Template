@@ -386,8 +386,8 @@ EOF
 
     if [[ "$PHPUNIT" == "y" ]]; then
         cat >> composer.json << EOF
-        "phpunit/phpunit": "^10.0",
-        "yoast/wp-test-utils": "^1.0",
+        "phpunit/phpunit": "^9.6",
+        "yoast/wp-test-utils": "^1.2",
 EOF
     fi
 
@@ -477,7 +477,7 @@ if [[ "$PHPUNIT" == "y" ]]; then
     cat > phpunit.xml << 'EOF'
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.0/phpunit.xsd"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
          bootstrap="tests/bootstrap.php"
          colors="true"
          convertErrorsToExceptions="true"
