@@ -21,6 +21,14 @@ class WordPress_Plugin_Template {
 	public $settings = null;
 
 	/**
+	 * Feature API class object
+	 * @var     object
+	 * @access  public
+	 * @since   1.0.0
+	 */
+	public $feature_api = null;
+
+	/**
 	 * The version number.
 	 * @var     string
 	 * @access  public

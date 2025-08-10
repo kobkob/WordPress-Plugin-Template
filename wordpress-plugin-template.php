@@ -27,6 +27,12 @@ require_once( 'includes/class-wordpress-plugin-template-settings.php' );
 require_once( 'includes/lib/class-wordpress-plugin-template-admin-api.php' );
 require_once( 'includes/lib/class-wordpress-plugin-template-post-type.php' );
 require_once( 'includes/lib/class-wordpress-plugin-template-taxonomy.php' );
+require_once( 'includes/lib/class-wordpress-plugin-template-feature-api.php' );
+
+// Load WordPress Feature API if available
+if ( file_exists( __DIR__ . '/vendor/automattic/wp-feature-api/wp-feature-api.php' ) ) {
+	require_once( __DIR__ . '/vendor/automattic/wp-feature-api/wp-feature-api.php' );
+}
 
 /**
  * Returns the main instance of WordPress_Plugin_Template to prevent the need to use globals.
@@ -39,6 +45,11 @@ function WordPress_Plugin_Template () {
 
 	if ( is_null( $instance->settings ) ) {
 		$instance->settings = WordPress_Plugin_Template_Settings::instance( $instance );
+	}
+
+	// Initialize Feature API integration if available
+	if ( is_null( $instance->feature_api ) && file_exists( __DIR__ . '/vendor/automattic/wp-feature-api/wp-feature-api.php' ) ) {
+		$instance->feature_api = WordPress_Plugin_Template_Feature_API::instance( $instance );
 	}
 
 	return $instance;
