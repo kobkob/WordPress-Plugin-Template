@@ -188,7 +188,27 @@ replace_in_file() {
     local replace=$3
     
     if [[ -f "$file" ]]; then
-        sed -i.bak "s|$search|$replace|g" "$file" && rm -f "$file.bak"
+        # Use a delimiter that's unlikely to appear in the strings
+        # First try with different delimiters until we find one that works
+        local delimiter
+        for delimiter in '|' '#' '@' '%' '~'; do
+            if [[ "$search" != *"$delimiter"* && "$replace" != *"$delimiter"* ]]; then
+                sed -i.bak "s${delimiter}${search}${delimiter}${replace}${delimiter}g" "$file" && rm -f "$file.bak"
+                return 0
+            fi
+        done
+        
+        # If no delimiter works, use perl for more robust handling
+        if command -v perl >/dev/null 2>&1; then
+            perl -i.bak -pe "s/\Q${search}\E/${replace}/g" "$file" && rm -f "$file.bak"
+        else
+            # Fallback: create temp file and use grep/awk
+            local temp_file="${file}.tmp$$"
+            awk -v search="$search" -v replace="$replace" '{
+                gsub(search, replace)
+                print
+            }' "$file" > "$temp_file" && mv "$temp_file" "$file"
+        fi
     fi
 }
 
@@ -257,10 +277,28 @@ if [[ "$REST_API" != "y" ]]; then
     # Remove REST API references from main plugin file
     replace_in_file "$SLUG.php" "require_once( 'includes/lib/class-$DEFAULT_SLUG-rest-api.php' );" ""
     replace_in_file "$SLUG.php" "require_once( 'includes/lib/class-$SLUG-rest-api.php' );" ""
-    replace_in_file "$SLUG.php" "	// Initialize REST API
-	if ( is_null( \$instance->rest_api ) ) {
-		\$instance->rest_api = ${CLASS}_REST_API::instance( \$instance );
-	}" ""
+    
+    # Handle complex multi-line REST API initialization removal
+    # Use a more robust method for multiline replacement
+    if [[ -f "$SLUG.php" ]]; then
+        # Create a temporary file to store the REST API initialization block
+        cat > /tmp/rest_api_block.$$ << 'BLOCK_EOF'
+	// Initialize REST API
+	if ( is_null( $instance->rest_api ) ) {
+		$instance->rest_api = CLASS_NAME_REST_API::instance( $instance );
+	}
+BLOCK_EOF
+        
+        # Replace the placeholder with actual class name
+        sed "s/CLASS_NAME/${CLASS}/g" /tmp/rest_api_block.$$ > /tmp/rest_api_actual_block.$$
+        
+        # Use grep -v to remove lines containing the REST API initialization
+        grep -v -F "Initialize REST API" "$SLUG.php" | grep -v -F "rest_api = ${CLASS}_REST_API::instance" > "$SLUG.php.tmp"
+        mv "$SLUG.php.tmp" "$SLUG.php"
+        
+        # Clean up temp files
+        rm -f /tmp/rest_api_block.$$ /tmp/rest_api_actual_block.$$
+    fi
 fi
 
 # Remove Docker files if not requested
