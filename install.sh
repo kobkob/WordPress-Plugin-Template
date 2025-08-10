@@ -376,25 +376,45 @@ if [[ "$INTERACTIVE_MODE" == false ]]; then
     cat > create-plugin-noninteractive.sh << 'EOF'
 #!/bin/bash
 
-# Set non-interactive defaults
-export NAME="${NAME:-My Plugin}"
-export FOLDER="${FOLDER:-./my-plugin}"
-export DESCRIPTION="${DESCRIPTION:-A modern WordPress plugin}"
-export AUTHOR="${AUTHOR:-Plugin Author}"
-export AUTHOR_EMAIL="${AUTHOR_EMAIL:-author@example.com}"
-export PLUGIN_URI="${PLUGIN_URI:-}"
-export GITHUB_ACTIONS="${GITHUB_ACTIONS:-y}"
-export PHPUNIT="${PHPUNIT:-y}"
-export PHPCS="${PHPCS:-y}"
-export FEATURE_API="${FEATURE_API:-y}"
-export REST_API="${REST_API:-y}"
-export DOCKER_ENV="${DOCKER_ENV:-y}"
-export AGILE_FRAMEWORK="${AGILE_FRAMEWORK:-y}"
-export NEWREPO="${NEWREPO:-y}"
+# Set non-interactive defaults from environment or use defaults
+NAME="${NAME:-My Plugin}"
+FOLDER="${FOLDER:-./my-plugin}"
+DESCRIPTION="${DESCRIPTION:-A modern WordPress plugin}"
+AUTHOR="${AUTHOR:-Plugin Author}"
+AUTHOR_EMAIL="${AUTHOR_EMAIL:-author@example.com}"
+PLUGIN_URI="${PLUGIN_URI:-}"
+GITHUB_ACTIONS="${GITHUB_ACTIONS:-y}"
+PHPUNIT="${PHPUNIT:-y}"
+PHPCS="${PHPCS:-y}"
+FEATURE_API="${FEATURE_API:-y}"
+REST_API="${REST_API:-y}"
+DOCKER_ENV="${DOCKER_ENV:-y}"
+AGILE_FRAMEWORK="${AGILE_FRAMEWORK:-y}"
+NEWREPO="${NEWREPO:-y}"
 
-# Run the original script with pre-set environment variables
-# and pipe default answers to all prompts
-echo -e "$NAME\n$FOLDER\n$DESCRIPTION\n$AUTHOR\n$AUTHOR_EMAIL\n$PLUGIN_URI\n$GITHUB_ACTIONS\n$PHPUNIT\n$PHPCS\n$FEATURE_API\n$REST_API\n$DOCKER_ENV\n$AGILE_FRAMEWORK\n$NEWREPO" | ./create-plugin.sh
+# Create input file with all responses
+cat > input-responses.txt << INPUT_EOF
+$NAME
+$FOLDER
+$DESCRIPTION
+$AUTHOR
+$AUTHOR_EMAIL
+$PLUGIN_URI
+$GITHUB_ACTIONS
+$PHPUNIT
+$PHPCS
+$FEATURE_API
+$REST_API
+$DOCKER_ENV
+$AGILE_FRAMEWORK
+$NEWREPO
+INPUT_EOF
+
+# Run the original script with input file
+./create-plugin.sh < input-responses.txt
+
+# Clean up
+rm -f input-responses.txt
 EOF
     
     chmod +x create-plugin-noninteractive.sh

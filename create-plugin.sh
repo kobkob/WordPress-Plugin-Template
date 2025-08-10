@@ -27,7 +27,7 @@ validate_plugin_name() {
         print_message $RED "Error: Plugin name cannot be empty"
         return 1
     fi
-    if [[ ! "$name" =~ ^[A-Za-z][A-Za-z0-9\ ]*$ ]]; then
+    if [[ ! "$name" =~ ^[A-Za-z][A-Za-z0-9[:space:]]*$ ]]; then
         print_message $RED "Error: Plugin name must start with a letter and contain only letters, numbers, and spaces"
         return 1
     fi
