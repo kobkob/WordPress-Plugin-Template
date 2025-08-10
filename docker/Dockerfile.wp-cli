@@ -1,0 +1,30 @@
+FROM wordpress:cli-php8.3
+
+# Install system dependencies
+RUN apk add --no-cache \
+    git \
+    bash \
+    less \
+    mysql-client \
+    nodejs \
+    npm \
+    composer
+
+# Install additional PHP extensions
+RUN docker-php-ext-install \
+    bcmath \
+    exif
+
+# Set bash as default shell
+RUN sed -i 's/\/bin\/ash/\/bin\/bash/g' /etc/passwd
+
+# Create useful aliases
+RUN echo 'alias ll="ls -la"' >> /root/.bashrc \
+    && echo 'alias wp="wp --allow-root"' >> /root/.bashrc \
+    && echo 'alias wpp="wp --allow-root --path=/var/www/html"' >> /root/.bashrc
+
+# Set working directory
+WORKDIR /var/www/html
+
+# Default command
+CMD ["--info"]

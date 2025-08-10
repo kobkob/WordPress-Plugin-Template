@@ -134,6 +134,10 @@ printf "Include REST API endpoints (y/n) [y]: "
 read -r REST_API
 REST_API=${REST_API:-y}
 
+printf "Include Docker development environment (y/n) [y]: "
+read -r DOCKER_ENV
+DOCKER_ENV=${DOCKER_ENV:-y}
+
 printf "Initialize new git repository (y/n) [y]: "
 read -r NEWREPO
 NEWREPO=${NEWREPO:-y}
@@ -253,6 +257,16 @@ if [[ "$REST_API" != "y" ]]; then
 	if ( is_null( \$instance->rest_api ) ) {
 		\$instance->rest_api = ${CLASS}_REST_API::instance( \$instance );
 	}" ""
+fi
+
+# Remove Docker files if not requested
+if [[ "$DOCKER_ENV" != "y" ]]; then
+    print_message $YELLOW "Removing Docker development environment..."
+    rm -f docker-compose.yml
+    rm -rf docker/
+    rm -f .dockerignore
+    rm -f .env.example
+    rm -f DOCKER.md
 fi
 
 # Create composer.json
@@ -815,17 +829,39 @@ print_message $GREEN "✓ Plugin '$NAME' created successfully!"
 print_message $BLUE "Location: $DEST_DIR"
 echo
 print_message $YELLOW "Next steps:"
+if [[ "$DOCKER_ENV" == "y" ]]; then
+    echo "1. Start Docker development environment: docker-compose up -d"
+    echo "2. Access WordPress: http://localhost:8000"
+    echo "3. Access phpMyAdmin: http://localhost:8080"
+    echo "4. See DOCKER.md for complete usage guide"
+fi
 if [[ "$PHPUNIT" == "y" || "$PHPCS" == "y" ]]; then
-    echo "1. Run 'composer install' to install development dependencies"
+    if [[ "$DOCKER_ENV" == "y" ]]; then
+        echo "5. Run 'composer install' to install development dependencies"
+    else
+        echo "1. Run 'composer install' to install development dependencies"
+    fi
 fi
 if [[ "$PHPUNIT" == "y" ]]; then
-    echo "2. Set up WordPress test environment: ./bin/install-wp-tests.sh wordpress_test root '' localhost latest"
-    echo "3. Run tests: composer test"
+    if [[ "$DOCKER_ENV" == "y" ]]; then
+        echo "6. Run tests inside Docker: docker-compose exec wp-cli bash -c 'cd /var/www/html/wp-content/plugins/$SLUG && composer test'"
+    else
+        echo "2. Set up WordPress test environment: ./bin/install-wp-tests.sh wordpress_test root '' localhost latest"
+        echo "3. Run tests: composer test"
+    fi
 fi
 if [[ "$PHPCS" == "y" ]]; then
-    echo "4. Check coding standards: composer cs"
+    if [[ "$DOCKER_ENV" == "y" ]]; then
+        echo "7. Check coding standards: docker-compose exec wp-cli bash -c 'cd /var/www/html/wp-content/plugins/$SLUG && composer cs'"
+    else
+        echo "4. Check coding standards: composer cs"
+    fi
 fi
-echo "5. Start developing your plugin!"
+if [[ "$DOCKER_ENV" == "y" ]]; then
+    echo "8. Start developing your plugin!"
+else
+    echo "5. Start developing your plugin!"
+fi
 echo
 
 print_message $GREEN "Happy coding! 🚀"

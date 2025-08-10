@@ -1,0 +1,101 @@
+ARG PHP_VERSION=8.3
+FROM wordpress:php${PHP_VERSION}-apache
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    unzip \
+    libzip-dev \
+    libicu-dev \
+    libonig-dev \
+    libxml2-dev \
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
+    libpng-dev \
+    libwebp-dev \
+    libxpm-dev \
+    libmagickwand-dev \
+    ghostscript \
+    less \
+    nano \
+    vim \
+    curl \
+    wget \
+    gnupg \
+    mysql-client \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install PHP extensions
+RUN docker-php-ext-configure gd \
+    --with-freetype \
+    --with-jpeg \
+    --with-webp \
+    --with-xpm \
+    && docker-php-ext-install -j$(nproc) \
+    gd \
+    zip \
+    intl \
+    mbstring \
+    xml \
+    bcmath \
+    exif \
+    opcache
+
+# Install ImageMagick PHP extension
+RUN pecl install imagick && docker-php-ext-enable imagick
+
+# Install Xdebug for debugging
+RUN pecl install xdebug && docker-php-ext-enable xdebug
+
+# Install Redis PHP extension
+RUN pecl install redis && docker-php-ext-enable redis
+
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Install Node.js and npm
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs
+
+# Set up WordPress configuration for development
+RUN echo 'expose_php = Off' >> /usr/local/etc/php/conf.d/security.ini \
+    && echo 'display_errors = On' >> /usr/local/etc/php/conf.d/development.ini \
+    && echo 'log_errors = On' >> /usr/local/etc/php/conf.d/development.ini \
+    && echo 'error_log = /dev/stderr' >> /usr/local/etc/php/conf.d/development.ini \
+    && echo 'upload_max_filesize = 64M' >> /usr/local/etc/php/conf.d/uploads.ini \
+    && echo 'post_max_size = 64M' >> /usr/local/etc/php/conf.d/uploads.ini \
+    && echo 'max_execution_time = 300' >> /usr/local/etc/php/conf.d/uploads.ini \
+    && echo 'memory_limit = 512M' >> /usr/local/etc/php/conf.d/uploads.ini
+
+# Enable Apache modules for development
+RUN a2enmod rewrite headers expires deflate ssl
+
+# Create directory for plugin development
+RUN mkdir -p /var/www/html/wp-content/plugins
+
+# Set proper permissions
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html
+
+# Add custom Apache configuration
+COPY docker/apache-wordpress.conf /etc/apache2/sites-available/000-default.conf
+
+# Add custom PHP configuration
+COPY docker/php-wordpress.ini /usr/local/etc/php/conf.d/wordpress.ini
+
+# Add WordPress development helpers script
+COPY docker/wp-dev-setup.sh /usr/local/bin/wp-dev-setup
+RUN chmod +x /usr/local/bin/wp-dev-setup
+
+# Set working directory
+WORKDIR /var/www/html
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost/ || exit 1
+
+# Expose port
+EXPOSE 80
+
+# Start Apache
+CMD ["apache2-foreground"]

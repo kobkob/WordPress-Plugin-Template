@@ -74,9 +74,27 @@ The script will guide you through:
 1. **Plugin Information**: Name, description, author details
 2. **Development Setup**: PHPUnit tests, PHPCS, GitHub Actions
 3. **API Integration**: WordPress Feature API, REST API endpoints
-4. **File Generation**: All necessary config files and boilerplate
-5. **Dependency Installation**: Composer packages
-6. **Git Initialization**: Clean repository setup
+4. **Docker Environment**: Complete containerized development setup
+5. **File Generation**: All necessary config files and boilerplate
+6. **Dependency Installation**: Composer packages
+7. **Git Initialization**: Clean repository setup
+
+### Docker Development Environment
+
+For the quickest setup, use the included Docker environment:
+
+```bash
+# After running create-plugin.sh with Docker option
+cd your-plugin-directory
+
+# Start the development environment
+docker-compose up -d
+
+# Access your WordPress development site
+open http://localhost:8000
+```
+
+See [DOCKER.md](DOCKER.md) for complete documentation.
 
 ### Manual Setup
 
@@ -456,7 +474,7 @@ This template is released under the [GPL-3.0+ License](LICENSE). Feel free to us
 
 - [x] **PHP 8.4** compatibility testing
 - [x] **REST API** endpoints template
-- [ ] **Docker** development environment
+- [x] **Docker** development environment
 - [ ] **Agile**, **XP** Methodology
 - [ ] **Block editor** integration examples
 - [ ] **WP-CLI** command examples
