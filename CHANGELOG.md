@@ -29,6 +29,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Development tools in Docker: WP-CLI, Node.js, Composer, and development plugins
 - Docker documentation with comprehensive usage guide (DOCKER.md)
 - Environment customization with configurable ports, PHP versions, and service options
+- **Agile/XP methodology framework**: Complete workflow integration for professional development
+- Sprint management automation with `start-sprint.sh` script and templating system
+- AI-assisted development workflow with `ai-implement.sh` script for TDD cycles
+- User story templates with acceptance criteria and estimation frameworks
+- Sprint planning templates with objectives, risks, and success metrics
+- AI prompt generation for comprehensive test creation and code reviews
+- TDD workflow automation with Red-Green-Refactor cycle support
+- Comprehensive AGILE-GUIDE.md documentation with best practices
+- Optional Agile framework selection in create-plugin.sh automation script
 
 ### Changed
 - Complete rewrite of README with modern documentation standards

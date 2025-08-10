@@ -24,6 +24,7 @@ A modern, robust, and GPL-licensed code template for creating standards-complian
 - **Composer** dependency management
 - **PHPStan** static analysis ready
 - **WordPress test environment** setup scripts
+- **Agile/XP methodology** with sprint management and TDD workflow
 
 ### AI/LLM Integration
 - **WordPress Feature API** integration for AI-powered functionality
@@ -95,6 +96,23 @@ open http://localhost:8000
 ```
 
 See [DOCKER.md](DOCKER.md) for complete documentation.
+
+### Agile/XP Development Methodology
+
+The template includes a complete Agile/XP workflow framework for professional plugin development:
+
+```bash
+# After creating your plugin with Agile framework
+cd your-plugin-directory
+
+# Start your first sprint
+./agile/scripts/start-sprint.sh
+
+# Use AI assistance for development
+./agile/scripts/ai-implement.sh
+```
+
+See [AGILE-GUIDE.md](AGILE-GUIDE.md) for the complete methodology guide.
 
 ### Manual Setup
 
@@ -381,26 +399,32 @@ my-plugin/
 ├── .github/
 │   └── workflows/
 │       └── ci.yml            # GitHub Actions workflow
-├── assets/                   # Frontend assets
+├── agile/                   # Agile/XP methodology framework
+│   ├── scripts/            # Automation scripts
+│   ├── templates/          # User story & sprint templates
+│   ├── docs/              # Methodology documentation
+│   └── ai/                # AI collaboration prompts
+├── assets/                  # Frontend assets
 ├── bin/
-│   └── install-wp-tests.sh  # WordPress test setup
+│   └── install-wp-tests.sh # WordPress test setup
 ├── includes/
-│   ├── lib/                 # Plugin libraries
-│   ├── class-plugin.php     # Main plugin class
-│   └── class-settings.php   # Settings class
-├── lang/                    # Translation files
+│   ├── lib/                # Plugin libraries
+│   ├── class-plugin.php    # Main plugin class
+│   └── class-settings.php  # Settings class
+├── lang/                   # Translation files
 ├── tests/
-│   ├── unit/               # Unit tests
-│   ├── integration/        # Integration tests
-│   └── bootstrap.php       # Test bootstrap
-├── vendor/                 # Composer dependencies
-├── composer.json           # Composer configuration
-├── phpcs.xml              # Coding standards config
-├── phpunit.xml            # PHPUnit configuration
-├── package.json           # Node.js dependencies
-├── Gruntfile.js          # Grunt build configuration
-├── my-plugin.php         # Main plugin file
-└── README.md             # Plugin documentation
+│   ├── unit/              # Unit tests
+│   ├── integration/       # Integration tests
+│   └── bootstrap.php      # Test bootstrap
+├── vendor/                # Composer dependencies
+├── composer.json          # Composer configuration
+├── phpcs.xml             # Coding standards config
+├── phpunit.xml           # PHPUnit configuration
+├── package.json          # Node.js dependencies
+├── Gruntfile.js         # Grunt build configuration
+├── AGILE-GUIDE.md       # Agile methodology guide
+├── my-plugin.php        # Main plugin file
+└── README.md            # Plugin documentation
 ```
 
 ## 🔒 Security Best Practices
@@ -475,7 +499,7 @@ This template is released under the [GPL-3.0+ License](LICENSE). Feel free to us
 - [x] **PHP 8.4** compatibility testing
 - [x] **REST API** endpoints template
 - [x] **Docker** development environment
-- [ ] **Agile**, **XP** Methodology
+- [x] **Agile/XP** methodology with TDD and sprint management
 - [ ] **Block editor** integration examples
 - [ ] **WP-CLI** command examples
 - [ ] **Automated** plugin submission tools

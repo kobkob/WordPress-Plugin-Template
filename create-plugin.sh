@@ -138,6 +138,10 @@ printf "Include Docker development environment (y/n) [y]: "
 read -r DOCKER_ENV
 DOCKER_ENV=${DOCKER_ENV:-y}
 
+printf "Include Agile/XP methodology framework (y/n) [y]: "
+read -r AGILE_FRAMEWORK
+AGILE_FRAMEWORK=${AGILE_FRAMEWORK:-y}
+
 printf "Initialize new git repository (y/n) [y]: "
 read -r NEWREPO
 NEWREPO=${NEWREPO:-y}
@@ -267,6 +271,13 @@ if [[ "$DOCKER_ENV" != "y" ]]; then
     rm -f .dockerignore
     rm -f .env.example
     rm -f DOCKER.md
+fi
+
+# Remove Agile framework files if not requested
+if [[ "$AGILE_FRAMEWORK" != "y" ]]; then
+    print_message $YELLOW "Removing Agile/XP methodology framework..."
+    rm -rf agile/
+    rm -f AGILE-GUIDE.md
 fi
 
 # Create composer.json
@@ -857,10 +868,22 @@ if [[ "$PHPCS" == "y" ]]; then
         echo "4. Check coding standards: composer cs"
     fi
 fi
-if [[ "$DOCKER_ENV" == "y" ]]; then
-    echo "8. Start developing your plugin!"
+if [[ "$AGILE_FRAMEWORK" == "y" ]]; then
+    if [[ "$DOCKER_ENV" == "y" ]]; then
+        echo "8. Use Agile/XP methodology: see AGILE-GUIDE.md for workflow"
+        echo "9. Start a sprint: ./agile/scripts/start-sprint.sh"
+        echo "10. Start developing your plugin!"
+    else
+        echo "5. Use Agile/XP methodology: see AGILE-GUIDE.md for workflow"
+        echo "6. Start a sprint: ./agile/scripts/start-sprint.sh"
+        echo "7. Start developing your plugin!"
+    fi
 else
-    echo "5. Start developing your plugin!"
+    if [[ "$DOCKER_ENV" == "y" ]]; then
+        echo "8. Start developing your plugin!"
+    else
+        echo "5. Start developing your plugin!"
+    fi
 fi
 echo
 
