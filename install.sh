@@ -23,6 +23,18 @@ print_message() {
 # Default values
 PLUGIN_NAME=""
 DESTINATION_DIR=""
+PLUGIN_DESCRIPTION=""
+PLUGIN_AUTHOR=""
+PLUGIN_AUTHOR_EMAIL=""
+PLUGIN_URI=""
+INCLUDE_FEATURE_API="y"
+INCLUDE_REST_API="y"
+INCLUDE_GITHUB_ACTIONS="y"
+INCLUDE_PHPUNIT="y"
+INCLUDE_PHPCS="y"
+INCLUDE_DOCKER="y"
+INCLUDE_AGILE="y"
+CREATE_NEW_REPO="y"
 INTERACTIVE_MODE=true
 REPO_URL="https://github.com/kobkob/WordPress-Plugin-Template.git"
 TEMP_DIR=$(mktemp -d)
@@ -38,6 +50,54 @@ while [[ $# -gt 0 ]]; do
             DESTINATION_DIR="$2"
             shift 2
             ;;
+        --description)
+            PLUGIN_DESCRIPTION="$2"
+            shift 2
+            ;;
+        --author)
+            PLUGIN_AUTHOR="$2"
+            shift 2
+            ;;
+        --author-email)
+            PLUGIN_AUTHOR_EMAIL="$2"
+            shift 2
+            ;;
+        --uri)
+            PLUGIN_URI="$2"
+            shift 2
+            ;;
+        --include-feature-api)
+            INCLUDE_FEATURE_API="$2"
+            shift 2
+            ;;
+        --include-rest-api)
+            INCLUDE_REST_API="$2"
+            shift 2
+            ;;
+        --include-github-actions)
+            INCLUDE_GITHUB_ACTIONS="$2"
+            shift 2
+            ;;
+        --include-phpunit)
+            INCLUDE_PHPUNIT="$2"
+            shift 2
+            ;;
+        --include-phpcs)
+            INCLUDE_PHPCS="$2"
+            shift 2
+            ;;
+        --include-docker)
+            INCLUDE_DOCKER="$2"
+            shift 2
+            ;;
+        --include-agile)
+            INCLUDE_AGILE="$2"
+            shift 2
+            ;;
+        --create-repo)
+            CREATE_NEW_REPO="$2"
+            shift 2
+            ;;
         --non-interactive)
             INTERACTIVE_MODE=false
             shift
@@ -50,17 +110,36 @@ while [[ $# -gt 0 ]]; do
             echo "  curl -sSL https://raw.githubusercontent.com/kobkob/WordPress-Plugin-Template/refs/heads/master/install.sh | bash -s -- [OPTIONS]"
             echo
             echo "Options:"
-            echo "  --name NAME           Plugin name (e.g., 'My Awesome Plugin')"
-            echo "  --dir DIRECTORY       Destination directory"
-            echo "  --non-interactive     Skip interactive prompts (requires --name and --dir)"
-            echo "  --help, -h           Show this help message"
+            echo "  --name NAME                      Plugin name (e.g., 'My Awesome Plugin')"
+            echo "  --dir DIRECTORY                  Destination directory"
+            echo "  --description DESCRIPTION        Plugin description"
+            echo "  --author AUTHOR                  Plugin author name"
+            echo "  --author-email EMAIL             Plugin author email"
+            echo "  --uri URI                        Plugin URI"
+            echo "  --include-feature-api VALUE      Include Feature API integration (y/n)"
+            echo "  --include-rest-api VALUE         Include REST API endpoints (y/n)"
+            echo "  --include-github-actions VALUE   Include GitHub Actions workflows (y/n)"
+            echo "  --include-phpunit VALUE          Include PHPUnit tests (y/n)"
+            echo "  --include-phpcs VALUE            Include PHPCS configuration (y/n)"
+            echo "  --include-docker VALUE           Include Docker development environment (y/n)"
+            echo "  --include-agile VALUE            Include Agile development framework (y/n)"
+            echo "  --create-repo VALUE              Initialize a new Git repository (y/n)"
+            echo "  --non-interactive                Skip interactive prompts (requires --name)"
+            echo "  --help, -h                       Show this help message"
             echo
             echo "Examples:"
             echo "  # Interactive installation"
             echo "  curl -sSL https://raw.githubusercontent.com/kobkob/WordPress-Plugin-Template/refs/heads/master/install.sh | bash"
             echo
-            echo "  # Non-interactive installation"
-            echo "  curl -sSL https://raw.githubusercontent.com/kobkob/WordPress-Plugin-Template/refs/heads/master/install.sh | bash -s -- --name \"My Plugin\" --dir ./my-plugin --non-interactive"
+            echo "  # Non-interactive installation with all options"
+            echo "  curl -sSL https://raw.githubusercontent.com/kobkob/WordPress-Plugin-Template/refs/heads/master/install.sh | bash -s -- \\"
+            echo "      --name \"Test Plugin AI\" \\"
+            echo "      --dir ./test-plugin-ai \\"
+            echo "      --description \"A test plugin with AI features\" \\"
+            echo "      --author \"Test Author\" \\"
+            echo "      --include-feature-api y \\"
+            echo "      --include-rest-api y \\"
+            echo "      --non-interactive"
             echo
             exit 0
             ;;
@@ -346,9 +425,15 @@ chmod +x create-plugin.sh
 
 # If non-interactive mode and required parameters are provided
 if [[ "$INTERACTIVE_MODE" == false ]]; then
-    if [[ -z "$PLUGIN_NAME" || -z "$DESTINATION_DIR" ]]; then
-        print_message $RED "Error: Non-interactive mode requires --name and --dir parameters"
+    if [[ -z "$PLUGIN_NAME" ]]; then
+        print_message $RED "Error: Non-interactive mode requires at least --name parameter"
         exit 1
+    fi
+    
+    # If destination directory not provided, generate one based on plugin name
+    if [[ -z "$DESTINATION_DIR" ]]; then
+        # Convert plugin name to lowercase, replace spaces with dashes
+        DESTINATION_DIR="./$(echo "$PLUGIN_NAME" | tr '[:upper:]' '[:lower:]' | tr ' ' '-')"
     fi
     
     print_message $YELLOW "Creating plugin '$PLUGIN_NAME' in non-interactive mode..."
@@ -356,21 +441,21 @@ if [[ "$INTERACTIVE_MODE" == false ]]; then
     # Create the destination directory if it doesn't exist
     mkdir -p "$(dirname "$DESTINATION_DIR")"
     
-    # Run the creation script with defaults (non-interactive)
+    # Set environment variables for non-interactive script
     export NAME="$PLUGIN_NAME"
-    export FOLDER="$(dirname "$DESTINATION_DIR")"
-    export DESCRIPTION="A modern WordPress plugin created from template"
-    export AUTHOR="$(git config --global user.name 2>/dev/null || echo 'Plugin Author')"
-    export AUTHOR_EMAIL="$(git config --global user.email 2>/dev/null || echo 'author@example.com')"
-    export PLUGIN_URI=""
-    export GITHUB_ACTIONS="y"
-    export PHPUNIT="y"
-    export PHPCS="y"
-    export FEATURE_API="y"
-    export REST_API="y"
-    export DOCKER_ENV="y"
-    export AGILE_FRAMEWORK="y"
-    export NEWREPO="y"
+    export FOLDER="$DESTINATION_DIR"
+    export DESCRIPTION="${PLUGIN_DESCRIPTION:-A modern WordPress plugin created from template}"
+    export AUTHOR="${PLUGIN_AUTHOR:-$(git config --global user.name 2>/dev/null || echo 'Plugin Author')}"
+    export AUTHOR_EMAIL="${PLUGIN_AUTHOR_EMAIL:-$(git config --global user.email 2>/dev/null || echo 'author@example.com')}"
+    export PLUGIN_URI="$PLUGIN_URI"
+    export GITHUB_ACTIONS="$INCLUDE_GITHUB_ACTIONS"
+    export PHPUNIT="$INCLUDE_PHPUNIT"
+    export PHPCS="$INCLUDE_PHPCS"
+    export FEATURE_API="$INCLUDE_FEATURE_API"
+    export REST_API="$INCLUDE_REST_API"
+    export DOCKER_ENV="$INCLUDE_DOCKER"
+    export AGILE_FRAMEWORK="$INCLUDE_AGILE"
+    export NEWREPO="$CREATE_NEW_REPO"
     
     # Create a temporary script for non-interactive execution
     cat > create-plugin-noninteractive.sh << 'EOF'
@@ -392,7 +477,7 @@ DOCKER_ENV="${DOCKER_ENV:-y}"
 AGILE_FRAMEWORK="${AGILE_FRAMEWORK:-y}"
 NEWREPO="${NEWREPO:-y}"
 
-# Create input file with all responses
+# Create input file with all responses (matching create-plugin.sh input sequence)
 cat > input-responses.txt << INPUT_EOF
 $NAME
 $FOLDER
