@@ -166,7 +166,7 @@ CLASS=${NAME// /_}
 TOKEN=$(tr '[A-Z]' '[a-z]' <<< "$CLASS")
 SLUG=${TOKEN//_/-}
 
-NAMESPACE=$(echo "$CLASS" | sed 's/_/\\\/g')
+NAMESPACE=${CLASS//_/\\}
 
 print_message $YELLOW "Creating plugin '$NAME' in '$FOLDER/$SLUG'..."
 
