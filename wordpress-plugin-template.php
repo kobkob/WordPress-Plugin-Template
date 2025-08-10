@@ -28,6 +28,7 @@ require_once( 'includes/lib/class-wordpress-plugin-template-admin-api.php' );
 require_once( 'includes/lib/class-wordpress-plugin-template-post-type.php' );
 require_once( 'includes/lib/class-wordpress-plugin-template-taxonomy.php' );
 require_once( 'includes/lib/class-wordpress-plugin-template-feature-api.php' );
+require_once( 'includes/lib/class-wordpress-plugin-template-rest-api.php' );
 
 // Load WordPress Feature API if available
 if ( file_exists( __DIR__ . '/vendor/automattic/wp-feature-api/wp-feature-api.php' ) ) {
@@ -50,6 +51,11 @@ function WordPress_Plugin_Template () {
 	// Initialize Feature API integration if available
 	if ( is_null( $instance->feature_api ) && file_exists( __DIR__ . '/vendor/automattic/wp-feature-api/wp-feature-api.php' ) ) {
 		$instance->feature_api = WordPress_Plugin_Template_Feature_API::instance( $instance );
+	}
+
+	// Initialize REST API
+	if ( is_null( $instance->rest_api ) ) {
+		$instance->rest_api = WordPress_Plugin_Template_REST_API::instance( $instance );
 	}
 
 	return $instance;

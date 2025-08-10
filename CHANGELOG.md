@@ -19,6 +19,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Modern PHP 8.1+ support with type declarations
 - PHP 8.4 compatibility testing in CI/CD pipeline
 - PHPCS configuration updated to test against PHP 8.1-8.4 range
+- Comprehensive REST API endpoints template with full CRUD operations
+- REST API authentication, validation, and error handling
+- Batch operations support for REST API
+- REST API documentation and usage examples
 
 ### Changed
 - Complete rewrite of README with modern documentation standards

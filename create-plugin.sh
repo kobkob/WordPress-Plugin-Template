@@ -130,6 +130,10 @@ printf "Include WordPress Feature API for AI/LLM integration (y/n) [y]: "
 read -r FEATURE_API
 FEATURE_API=${FEATURE_API:-y}
 
+printf "Include REST API endpoints (y/n) [y]: "
+read -r REST_API
+REST_API=${REST_API:-y}
+
 printf "Initialize new git repository (y/n) [y]: "
 read -r NEWREPO
 NEWREPO=${NEWREPO:-y}
@@ -193,6 +197,11 @@ files_to_update=(
     "lang/$DEFAULT_SLUG.pot"
 )
 
+# Add REST API file to update list if enabled
+if [[ "$REST_API" == "y" ]]; then
+    files_to_update+=("includes/lib/class-$DEFAULT_SLUG-rest-api.php")
+fi
+
 # Rename class files
 mv "includes/class-$DEFAULT_SLUG.php" "includes/class-$SLUG.php"
 mv "includes/class-$DEFAULT_SLUG-settings.php" "includes/class-$SLUG-settings.php"
@@ -200,6 +209,9 @@ mv "includes/lib/class-$DEFAULT_SLUG-admin-api.php" "includes/lib/class-$SLUG-ad
 mv "includes/lib/class-$DEFAULT_SLUG-post-type.php" "includes/lib/class-$SLUG-post-type.php"
 mv "includes/lib/class-$DEFAULT_SLUG-taxonomy.php" "includes/lib/class-$SLUG-taxonomy.php"
 mv "includes/lib/class-$DEFAULT_SLUG-feature-api.php" "includes/lib/class-$SLUG-feature-api.php"
+if [[ "$REST_API" == "y" ]]; then
+    mv "includes/lib/class-$DEFAULT_SLUG-rest-api.php" "includes/lib/class-$SLUG-rest-api.php"
+fi
 mv "lang/$DEFAULT_SLUG.pot" "lang/$SLUG.pot"
 
 # Update file contents
@@ -223,6 +235,25 @@ for file in "${files_to_update[@]}"; do
         fi
     fi
 done
+
+# Remove REST API files if not requested
+if [[ "$REST_API" != "y" ]]; then
+    print_message $YELLOW "Removing REST API files..."
+    rm -f "includes/lib/class-$SLUG-rest-api.php"
+    rm -f "REST-API-GUIDE.md"
+    
+    # Remove REST API test files if they exist
+    rm -f "tests/integration/test-wordpress-plugin-template-rest-api.php"
+    rm -f "tests/unit/test-wordpress-plugin-template-rest-api-unit.php"
+    
+    # Remove REST API references from main plugin file
+    replace_in_file "$SLUG.php" "require_once( 'includes/lib/class-$DEFAULT_SLUG-rest-api.php' );" ""
+    replace_in_file "$SLUG.php" "require_once( 'includes/lib/class-$SLUG-rest-api.php' );" ""
+    replace_in_file "$SLUG.php" "	// Initialize REST API
+	if ( is_null( \$instance->rest_api ) ) {
+		\$instance->rest_api = ${CLASS}_REST_API::instance( \$instance );
+	}" ""
+fi
 
 # Create composer.json
 if [[ "$PHPUNIT" == "y" || "$PHPCS" == "y" || "$FEATURE_API" == "y" ]]; then
@@ -491,6 +522,36 @@ class Test_${CLASS}_Integration extends WP_UnitTestCase {
     }
 }
 EOF
+
+    # Add REST API tests if REST API is enabled
+    if [[ "$REST_API" == "y" ]]; then
+        print_message $YELLOW "Adding REST API test files..."
+        
+        # Copy REST API integration test
+        cp "tests/integration/test-wordpress-plugin-template-rest-api.php" "tests/integration/test-${SLUG}-rest-api.php"
+        
+        # Copy REST API unit test
+        cp "tests/unit/test-wordpress-plugin-template-rest-api-unit.php" "tests/unit/test-${SLUG}-rest-api-unit.php"
+        
+        # Update the test files with new plugin information
+        replace_in_file "tests/integration/test-${SLUG}-rest-api.php" "WordPress_Plugin_Template" "$CLASS"
+        replace_in_file "tests/integration/test-${SLUG}-rest-api.php" "wordpress-plugin-template" "$SLUG"
+        replace_in_file "tests/integration/test-${SLUG}-rest-api.php" "WordPress Plugin Template" "$NAME"
+        replace_in_file "tests/integration/test-${SLUG}-rest-api.php" "wpt_" "${TOKEN}_"
+        replace_in_file "tests/integration/test-${SLUG}-rest-api.php" "WordPress_Plugin_Template_REST_API" "${CLASS}_REST_API"
+        replace_in_file "tests/integration/test-${SLUG}-rest-api.php" "WordPress_Plugin_Template_Settings" "${CLASS}_Settings"
+        replace_in_file "tests/integration/test-${SLUG}-rest-api.php" "wordpress_plugin_template_item" "${TOKEN}_item"
+        replace_in_file "tests/integration/test-${SLUG}-rest-api.php" "Test_WordPress_Plugin_Template_REST_API" "Test_${CLASS}_REST_API"
+        
+        replace_in_file "tests/unit/test-${SLUG}-rest-api-unit.php" "WordPress_Plugin_Template" "$CLASS"
+        replace_in_file "tests/unit/test-${SLUG}-rest-api-unit.php" "wordpress-plugin-template" "$SLUG"
+        replace_in_file "tests/unit/test-${SLUG}-rest-api-unit.php" "WordPress Plugin Template" "$NAME"
+        replace_in_file "tests/unit/test-${SLUG}-rest-api-unit.php" "wpt_" "${TOKEN}_"
+        replace_in_file "tests/unit/test-${SLUG}-rest-api-unit.php" "WordPress_Plugin_Template_REST_API" "${CLASS}_REST_API"
+        replace_in_file "tests/unit/test-${SLUG}-rest-api-unit.php" "WordPress_Plugin_Template_Settings" "${CLASS}_Settings"
+        replace_in_file "tests/unit/test-${SLUG}-rest-api-unit.php" "wordpress_plugin_template_item" "${TOKEN}_item"
+        replace_in_file "tests/unit/test-${SLUG}-rest-api-unit.php" "Test_WordPress_Plugin_Template_REST_API_Unit" "Test_${CLASS}_REST_API_Unit"
+    fi
 
     # Create install script for WordPress tests
     cat > bin/install-wp-tests.sh << 'EOF'

@@ -37,6 +37,7 @@ A modern, robust, and GPL-licensed code template for creating standards-complian
 - **Post Type API** for one-line custom post type registration
 - **Taxonomy API** for one-line taxonomy registration
 - **Admin API** for meta boxes and custom fields
+- **REST API** endpoints with full CRUD operations
 - **Asset management** with proper enqueuing
 
 ### Frontend Assets
@@ -72,9 +73,10 @@ cd WordPress-Plugin-Template
 The script will guide you through:
 1. **Plugin Information**: Name, description, author details
 2. **Development Setup**: PHPUnit tests, PHPCS, GitHub Actions
-3. **File Generation**: All necessary config files and boilerplate
-4. **Dependency Installation**: Composer packages
-5. **Git Initialization**: Clean repository setup
+3. **API Integration**: WordPress Feature API, REST API endpoints
+4. **File Generation**: All necessary config files and boilerplate
+5. **Dependency Installation**: Composer packages
+6. **Git Initialization**: Clean repository setup
 
 ### Manual Setup
 
@@ -148,6 +150,57 @@ The template includes a `phpcs.xml` configuration file that enforces:
 - Custom prefix validation
 
 ## 🔧 API Usage
+
+### REST API Endpoints
+
+The template includes a comprehensive REST API system with full CRUD operations, authentication, and validation:
+
+```php
+// Access the REST API through the main plugin instance
+$plugin = My_Plugin();
+if ( $plugin->rest_api ) {
+    // REST API is available at /wp-json/my-plugin/v1/
+    // See REST-API-GUIDE.md for complete documentation
+}
+```
+
+#### Available Endpoints
+
+- **Plugin Info**: `GET /info` - Get plugin information
+- **Settings**: `GET|POST /settings` - Manage plugin settings
+- **Posts**: `GET|POST|PUT|DELETE /posts` - Full CRUD for custom post types
+- **Batch**: `POST /batch` - Process multiple requests
+
+#### Example Usage
+
+```javascript
+// Create a new post via REST API
+wp.apiFetch({
+  path: '/my-plugin/v1/posts',
+  method: 'POST',
+  data: {
+    title: 'API Created Post',
+    content: 'This post was created via the REST API',
+    meta: {
+      custom_field: 'custom_value'
+    }
+  }
+}).then(post => {
+  console.log('Created post:', post);
+});
+
+// Update plugin settings
+wp.apiFetch({
+  path: '/my-plugin/v1/settings',
+  method: 'POST',
+  data: {
+    text_field: 'Updated value',
+    checkbox_field: true
+  }
+}).then(response => {
+  console.log('Settings updated:', response);
+});
+```
 
 ### Registering Custom Post Types
 
@@ -403,7 +456,7 @@ This template is released under the [GPL-3.0+ License](LICENSE). Feel free to us
 
 - [x] **PHP 8.4** compatibility testing
 - [ ] **Block editor** integration examples
-- [ ] **REST API** endpoints template
+- [x] **REST API** endpoints template
 - [ ] **WP-CLI** command examples
 - [ ] **Docker** development environment
 - [ ] **Automated** plugin submission tools

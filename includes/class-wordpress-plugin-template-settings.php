@@ -339,6 +339,182 @@ class WordPress_Plugin_Template_Settings {
 	}
 
 	/**
+	 * Get all plugin settings for REST API.
+	 *
+	 * @return array All settings with their values.
+	 * @since 1.0.0
+	 */
+	public function get_all_settings() {
+		$settings = array();
+		
+		foreach ( $this->settings as $section_key => $section ) {
+			if ( isset( $section['fields'] ) && is_array( $section['fields'] ) ) {
+				foreach ( $section['fields'] as $field ) {
+					$option_name = $this->base . $field['id'];
+					$settings[ $field['id'] ] = get_option( $option_name, $field['default'] ?? '' );
+				}
+			}
+		}
+		
+		return $settings;
+	}
+
+	/**
+	 * Get a specific setting value for REST API.
+	 *
+	 * @param string $key Setting key.
+	 * @return mixed Setting value or null if not found.
+	 * @since 1.0.0
+	 */
+	public function get_setting( $key ) {
+		$field = $this->find_field_by_id( $key );
+		
+		if ( ! $field ) {
+			return null;
+		}
+		
+		$option_name = $this->base . $key;
+		return get_option( $option_name, $field['default'] ?? '' );
+	}
+
+	/**
+	 * Update plugin settings via REST API.
+	 *
+	 * @param array $settings Settings to update.
+	 * @return bool|WP_Error True on success, WP_Error on failure.
+	 * @since 1.0.0
+	 */
+	public function update_settings( $settings ) {
+		if ( ! is_array( $settings ) ) {
+			return new WP_Error(
+				'invalid_settings',
+				__( 'Settings must be an array', 'wordpress-plugin-template' ),
+				array( 'status' => 400 )
+			);
+		}
+		
+		$updated_count = 0;
+		$errors = array();
+		
+		foreach ( $settings as $key => $value ) {
+			$field = $this->find_field_by_id( $key );
+			
+			if ( ! $field ) {
+				$errors[] = sprintf( __( 'Setting "%s" not found', 'wordpress-plugin-template' ), $key );
+				continue;
+			}
+			
+			// Validate and sanitize the value
+			$sanitized_value = $this->sanitize_field_value( $value, $field );
+			
+			if ( is_wp_error( $sanitized_value ) ) {
+				$errors[] = sprintf( __( 'Invalid value for setting "%s": %s', 'wordpress-plugin-template' ), $key, $sanitized_value->get_error_message() );
+				continue;
+			}
+			
+			$option_name = $this->base . $key;
+			update_option( $option_name, $sanitized_value );
+			$updated_count++;
+		}
+		
+		if ( ! empty( $errors ) && $updated_count === 0 ) {
+			return new WP_Error(
+				'settings_update_failed',
+				implode( '; ', $errors ),
+				array( 'status' => 400 )
+			);
+		}
+		
+		return true;
+	}
+
+	/**
+	 * Find a field definition by ID.
+	 *
+	 * @param string $field_id Field ID to search for.
+	 * @return array|null Field definition or null if not found.
+	 * @since 1.0.0
+	 */
+	private function find_field_by_id( $field_id ) {
+		foreach ( $this->settings as $section ) {
+			if ( isset( $section['fields'] ) && is_array( $section['fields'] ) ) {
+				foreach ( $section['fields'] as $field ) {
+					if ( $field['id'] === $field_id ) {
+						return $field;
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Sanitize field value based on field type.
+	 *
+	 * @param mixed $value Field value to sanitize.
+	 * @param array $field Field definition.
+	 * @return mixed|WP_Error Sanitized value or WP_Error on failure.
+	 * @since 1.0.0
+	 */
+	private function sanitize_field_value( $value, $field ) {
+		$type = $field['type'] ?? 'text';
+		
+		switch ( $type ) {
+			case 'text':
+			case 'text_secret':
+			case 'password':
+				return sanitize_text_field( $value );
+				
+			case 'textarea':
+				return sanitize_textarea_field( $value );
+				
+			case 'number':
+				if ( ! is_numeric( $value ) ) {
+					return new WP_Error( 'invalid_number', __( 'Value must be numeric', 'wordpress-plugin-template' ) );
+				}
+				return (float) $value;
+				
+			case 'checkbox':
+				return $value ? 'on' : '';
+				
+			case 'select':
+			case 'radio':
+				if ( isset( $field['options'] ) && ! array_key_exists( $value, $field['options'] ) ) {
+					return new WP_Error( 'invalid_option', __( 'Invalid option selected', 'wordpress-plugin-template' ) );
+				}
+				return sanitize_text_field( $value );
+				
+			case 'checkbox_multi':
+				if ( ! is_array( $value ) ) {
+					return new WP_Error( 'invalid_array', __( 'Value must be an array', 'wordpress-plugin-template' ) );
+				}
+				$sanitized = array();
+				foreach ( $value as $item ) {
+					if ( isset( $field['options'] ) && array_key_exists( $item, $field['options'] ) ) {
+						$sanitized[] = sanitize_text_field( $item );
+					}
+				}
+				return $sanitized;
+				
+			case 'color':
+				if ( ! preg_match( '/^#[a-fA-F0-9]{6}$/', $value ) ) {
+					return new WP_Error( 'invalid_color', __( 'Invalid color format. Use #RRGGBB format', 'wordpress-plugin-template' ) );
+				}
+				return sanitize_text_field( $value );
+				
+			case 'image':
+				$attachment_id = (int) $value;
+				if ( $attachment_id > 0 && ! wp_attachment_is_image( $attachment_id ) ) {
+					return new WP_Error( 'invalid_image', __( 'Attachment is not a valid image', 'wordpress-plugin-template' ) );
+				}
+				return $attachment_id;
+				
+			default:
+				return sanitize_text_field( $value );
+		}
+	}
+
+	/**
 	 * Main WordPress_Plugin_Template_Settings Instance
 	 *
 	 * Ensures only one instance of WordPress_Plugin_Template_Settings is loaded or can be loaded.
