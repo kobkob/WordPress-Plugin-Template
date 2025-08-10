@@ -7,6 +7,15 @@ A modern, robust, and GPL-licensed code template for creating standards-complian
 [![WordPress Version](https://img.shields.io/badge/WordPress-6.0%2B-blue.svg)](https://wordpress.org)
 [![License](https://img.shields.io/badge/License-GPL--3.0%2B-green.svg)](LICENSE)
 
+## ⚡ **TL;DR - Get Started in 30 Seconds**
+
+```bash
+# Create a modern WordPress plugin with all features in one command
+curl -sSL https://raw.githubusercontent.com/kobkob/WordPress-Plugin-Template/refs/heads/master/install.sh | bash
+```
+
+Included: PHPUnit Tests ✅ Docker Environment ✅ GitHub Actions ✅ Agile/XP Framework ✅ REST API ✅ AI Integration ✅
+
 ## 🌟 Features
 
 ### Core Plugin Architecture
@@ -50,6 +59,48 @@ A modern, robust, and GPL-licensed code template for creating standards-complian
 
 ## 🚀 Quick Start
 
+### One-liner Installation
+
+The fastest way to get started is with our one-liner installer:
+
+```bash
+# Interactive installation
+curl -sSL https://raw.githubusercontent.com/kobkob/WordPress-Plugin-Template/refs/heads/master/install.sh | bash
+```
+
+#### Non-interactive Installation
+
+For automated setups or CI/CD pipelines:
+
+```bash
+# Non-interactive installation with all features
+curl -sSL https://raw.githubusercontent.com/kobkob/WordPress-Plugin-Template/refs/heads/master/install.sh | bash -s -- \
+  --name "My Awesome Plugin" \
+  --dir ./my-awesome-plugin \
+  --non-interactive
+```
+
+#### Installation Options
+
+```bash
+# Show help and options
+curl -sSL https://raw.githubusercontent.com/kobkob/WordPress-Plugin-Template/refs/heads/master/install.sh | bash -s -- --help
+```
+
+**Available Options:**
+- `--name NAME` - Plugin name (e.g., 'My Awesome Plugin')
+- `--dir DIRECTORY` - Destination directory
+- `--non-interactive` - Skip interactive prompts (requires --name and --dir)
+- `--help, -h` - Show help message
+
+The one-liner installer automatically includes all modern features:
+- ✅ PHPUnit tests and WordPress Coding Standards
+- ✅ GitHub Actions CI/CD pipeline
+- ✅ Docker development environment
+- ✅ REST API endpoints and WordPress Feature API
+- ✅ Agile/XP methodology framework
+- ✅ Complete dependency setup
+
 ### Prerequisites
 
 Ensure you have the following tools installed:
@@ -58,7 +109,7 @@ Ensure you have the following tools installed:
 - **Node.js & NPM** for asset building
 - **Git** for version control
 
-### Using the Enhanced Creation Script
+### Using the Enhanced Creation Script (Alternative)
 
 The enhanced `create-plugin.sh` script automates the entire setup process:
 

@@ -38,6 +38,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - TDD workflow automation with Red-Green-Refactor cycle support
 - Comprehensive AGILE-GUIDE.md documentation with best practices
 - Optional Agile framework selection in create-plugin.sh automation script
+- **One-liner installer**: Complete plugin creation via single curl command
+- Non-interactive installation mode for CI/CD and automated workflows
+- Interactive and non-interactive installation options with comprehensive help system
 
 ### Changed
 - Complete rewrite of README with modern documentation standards
