@@ -86,25 +86,246 @@ print_message $BLUE "🚀 WordPress Plugin Template - One-liner Installer"
 print_message $BLUE "================================================="
 echo
 
-# Check for required tools
+# Function to detect operating system
+detect_os() {
+    if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+        # Linux
+        if command -v apt-get &> /dev/null; then
+            echo "debian"
+        elif command -v yum &> /dev/null; then
+            echo "rhel"
+        elif command -v dnf &> /dev/null; then
+            echo "fedora"
+        elif command -v pacman &> /dev/null; then
+            echo "arch"
+        elif command -v apk &> /dev/null; then
+            echo "alpine"
+        else
+            echo "linux"
+        fi
+    elif [[ "$OSTYPE" == "darwin"* ]]; then
+        # Mac OSX
+        echo "macos"
+    elif [[ "$OSTYPE" == "cygwin" ]] || [[ "$OSTYPE" == "msys" ]] || [[ "$OSTYPE" == "win32" ]]; then
+        # Windows
+        echo "windows"
+    else
+        echo "unknown"
+    fi
+}
+
+# Function to install dependencies based on OS
+install_dependencies() {
+    local os=$(detect_os)
+    local missing_tools=("$@")
+    
+    if [[ ${#missing_tools[@]} -eq 0 ]]; then
+        return 0
+    fi
+    
+    print_message $YELLOW "Installing missing dependencies: ${missing_tools[*]}"
+    
+    case $os in
+        "debian")
+            # Ubuntu/Debian
+            print_message $YELLOW "Detected Debian/Ubuntu system. Installing dependencies..."
+            sudo apt-get update -qq
+            for tool in "${missing_tools[@]}"; do
+                case $tool in
+                    "git") sudo apt-get install -y git ;;
+                    "curl") sudo apt-get install -y curl ;;
+                    "php") sudo apt-get install -y php-cli php-curl php-zip php-xml php-mbstring ;;
+                    "composer")
+                        # Install Composer
+                        if ! command -v php &> /dev/null; then
+                            sudo apt-get install -y php-cli
+                        fi
+                        curl -sS https://getcomposer.org/installer | php
+                        sudo mv composer.phar /usr/local/bin/composer
+                        sudo chmod +x /usr/local/bin/composer
+                        ;;
+                    "node")
+                        # Install Node.js via NodeSource repository
+                        curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+                        sudo apt-get install -y nodejs
+                        ;;
+                    "npm") sudo apt-get install -y npm ;;
+                esac
+            done
+            ;;
+        "rhel")
+            # RHEL/CentOS
+            print_message $YELLOW "Detected RHEL/CentOS system. Installing dependencies..."
+            for tool in "${missing_tools[@]}"; do
+                case $tool in
+                    "git") sudo yum install -y git ;;
+                    "curl") sudo yum install -y curl ;;
+                    "php") sudo yum install -y php php-cli php-curl php-zip php-xml php-mbstring ;;
+                    "composer")
+                        if ! command -v php &> /dev/null; then
+                            sudo yum install -y php php-cli
+                        fi
+                        curl -sS https://getcomposer.org/installer | php
+                        sudo mv composer.phar /usr/local/bin/composer
+                        sudo chmod +x /usr/local/bin/composer
+                        ;;
+                    "node")
+                        curl -fsSL https://rpm.nodesource.com/setup_lts.x | sudo bash -
+                        sudo yum install -y nodejs
+                        ;;
+                    "npm") sudo yum install -y npm ;;
+                esac
+            done
+            ;;
+        "fedora")
+            # Fedora
+            print_message $YELLOW "Detected Fedora system. Installing dependencies..."
+            for tool in "${missing_tools[@]}"; do
+                case $tool in
+                    "git") sudo dnf install -y git ;;
+                    "curl") sudo dnf install -y curl ;;
+                    "php") sudo dnf install -y php php-cli php-curl php-zip php-xml php-mbstring ;;
+                    "composer")
+                        if ! command -v php &> /dev/null; then
+                            sudo dnf install -y php php-cli
+                        fi
+                        curl -sS https://getcomposer.org/installer | php
+                        sudo mv composer.phar /usr/local/bin/composer
+                        sudo chmod +x /usr/local/bin/composer
+                        ;;
+                    "node")
+                        curl -fsSL https://rpm.nodesource.com/setup_lts.x | sudo bash -
+                        sudo dnf install -y nodejs npm
+                        ;;
+                    "npm") sudo dnf install -y npm ;;
+                esac
+            done
+            ;;
+        "arch")
+            # Arch Linux
+            print_message $YELLOW "Detected Arch Linux system. Installing dependencies..."
+            for tool in "${missing_tools[@]}"; do
+                case $tool in
+                    "git") sudo pacman -S --noconfirm git ;;
+                    "curl") sudo pacman -S --noconfirm curl ;;
+                    "php") sudo pacman -S --noconfirm php php-curl php-zip php-xml ;;
+                    "composer") sudo pacman -S --noconfirm composer ;;
+                    "node") sudo pacman -S --noconfirm nodejs npm ;;
+                    "npm") sudo pacman -S --noconfirm npm ;;
+                esac
+            done
+            ;;
+        "alpine")
+            # Alpine Linux
+            print_message $YELLOW "Detected Alpine Linux system. Installing dependencies..."
+            for tool in "${missing_tools[@]}"; do
+                case $tool in
+                    "git") sudo apk add git ;;
+                    "curl") sudo apk add curl ;;
+                    "php") sudo apk add php php-cli php-curl php-zip php-xml php-mbstring ;;
+                    "composer") sudo apk add composer ;;
+                    "node") sudo apk add nodejs npm ;;
+                    "npm") sudo apk add npm ;;
+                esac
+            done
+            ;;
+        "macos")
+            # macOS
+            print_message $YELLOW "Detected macOS system. Installing dependencies..."
+            if ! command -v brew &> /dev/null; then
+                print_message $YELLOW "Installing Homebrew first..."
+                /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+            fi
+            for tool in "${missing_tools[@]}"; do
+                case $tool in
+                    "git") brew install git ;;
+                    "curl") brew install curl ;;
+                    "php") brew install php ;;
+                    "composer") brew install composer ;;
+                    "node") brew install node ;;
+                    "npm") brew install node ;; # npm comes with node
+                esac
+            done
+            ;;
+        "windows")
+            # Windows (WSL/Git Bash/MSYS2)
+            print_message $YELLOW "Detected Windows system."
+            print_message $RED "Automatic dependency installation on Windows is not supported."
+            print_message $YELLOW "Please install the following tools manually:"
+            print_message $YELLOW "- Git: https://git-scm.com/download/win"
+            print_message $YELLOW "- PHP: https://windows.php.net/download/"
+            print_message $YELLOW "- Composer: https://getcomposer.org/download/"
+            print_message $YELLOW "- Node.js: https://nodejs.org/en/download/"
+            return 1
+            ;;
+        *)
+            print_message $RED "Unknown operating system. Cannot install dependencies automatically."
+            print_message $YELLOW "Please install the following tools manually: ${missing_tools[*]}"
+            return 1
+            ;;
+    esac
+    
+    return 0
+}
+
+# Check for required tools and install them if missing
 print_message $YELLOW "Checking dependencies..."
 missing_tools=()
 
+# Check for essential tools
 if ! command -v git &> /dev/null; then
     missing_tools+=("git")
 fi
 
 if ! command -v curl &> /dev/null && ! command -v wget &> /dev/null; then
-    missing_tools+=("curl or wget")
+    missing_tools+=("curl")
+fi
+
+# Check for development tools (required for full functionality)
+if ! command -v php &> /dev/null; then
+    missing_tools+=("php")
+fi
+
+if ! command -v composer &> /dev/null; then
+    missing_tools+=("composer")
+fi
+
+if ! command -v node &> /dev/null; then
+    missing_tools+=("node")
+fi
+
+if ! command -v npm &> /dev/null; then
+    missing_tools+=("npm")
 fi
 
 if [ ${#missing_tools[@]} -ne 0 ]; then
-    print_message $RED "Error: Missing required tools: ${missing_tools[*]}"
-    print_message $YELLOW "Please install the missing tools and run again"
-    exit 1
+    print_message $YELLOW "Missing dependencies: ${missing_tools[*]}"
+    print_message $YELLOW "Attempting to install dependencies automatically..."
+    
+    if install_dependencies "${missing_tools[@]}"; then
+        print_message $GREEN "✓ Dependencies installed successfully"
+        
+        # Verify installation
+        failed_tools=()
+        for tool in "${missing_tools[@]}"; do
+            if ! command -v "$tool" &> /dev/null; then
+                failed_tools+=("$tool")
+            fi
+        done
+        
+        if [ ${#failed_tools[@]} -ne 0 ]; then
+            print_message $RED "Error: Failed to install: ${failed_tools[*]}"
+            print_message $YELLOW "Please install these tools manually and run again"
+            exit 1
+        fi
+    else
+        print_message $RED "Error: Failed to install dependencies automatically"
+        print_message $YELLOW "Please install the missing tools manually and run again"
+        exit 1
+    fi
+else
+    print_message $GREEN "✓ All dependencies found"
 fi
-
-print_message $GREEN "✓ All dependencies found"
 echo
 
 # Clone the repository to temp directory

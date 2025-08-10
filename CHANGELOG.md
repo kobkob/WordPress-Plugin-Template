@@ -41,6 +41,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **One-liner installer**: Complete plugin creation via single curl command
 - Non-interactive installation mode for CI/CD and automated workflows
 - Interactive and non-interactive installation options with comprehensive help system
+- **Automatic dependency installation**: Auto-detection and installation of missing dependencies (PHP, Composer, Node.js, npm, git, curl)
+- Support for multiple operating systems: Ubuntu/Debian, RHEL/CentOS, Fedora, Arch Linux, Alpine Linux, macOS
+- OS detection with appropriate package manager usage (apt-get, yum, dnf, pacman, apk, brew)
+- Automatic Composer installation using official installer script
+- Node.js installation via NodeSource repositories for Linux distributions
+- Homebrew auto-installation on macOS if missing
+- Clear manual installation instructions for Windows and unsupported systems
+- Dependency verification after installation with error handling
 
 ### Changed
 - Complete rewrite of README with modern documentation standards

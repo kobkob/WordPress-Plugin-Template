@@ -93,6 +93,27 @@ curl -sSL https://raw.githubusercontent.com/kobkob/WordPress-Plugin-Template/ref
 - `--non-interactive` - Skip interactive prompts (requires --name and --dir)
 - `--help, -h` - Show help message
 
+#### Automatic Dependency Installation 🔧
+
+The installer automatically detects and installs missing dependencies on supported systems:
+
+- **Ubuntu/Debian**: Uses `apt-get` package manager
+- **RHEL/CentOS**: Uses `yum` package manager
+- **Fedora**: Uses `dnf` package manager
+- **Arch Linux**: Uses `pacman` package manager
+- **Alpine Linux**: Uses `apk` package manager
+- **macOS**: Uses Homebrew (installs it first if missing)
+- **Windows**: Provides manual installation instructions
+
+**Auto-installed dependencies:**
+- PHP 8.1+ with required extensions (curl, zip, xml, mbstring)
+- Composer (latest stable version)
+- Node.js LTS + npm
+- Git version control
+- curl for downloads
+
+For unsupported systems, the installer provides clear manual installation instructions.
+
 The one-liner installer automatically includes all modern features:
 - ✅ PHPUnit tests and WordPress Coding Standards
 - ✅ GitHub Actions CI/CD pipeline
@@ -103,11 +124,13 @@ The one-liner installer automatically includes all modern features:
 
 ### Prerequisites
 
-Ensure you have the following tools installed:
-- **PHP 8.1+** with required extensions
+The one-liner installer automatically installs missing dependencies on supported systems. For manual setup or unsupported systems, ensure you have:
+
+- **PHP 8.1+** with required extensions (curl, zip, xml, mbstring)
 - **Composer** for dependency management
 - **Node.js & NPM** for asset building
 - **Git** for version control
+- **curl** for downloads
 
 ### Using the Enhanced Creation Script (Alternative)
 
