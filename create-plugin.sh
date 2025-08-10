@@ -299,8 +299,10 @@ if [[ "$REST_API" != "y" ]]; then
 	}
 BLOCK_EOF
         
-        # Replace the placeholder with actual class name
-        sed "s/CLASS_NAME/${CLASS}/g" /tmp/rest_api_block.$$ > /tmp/rest_api_actual_block.$$
+        # Replace the placeholder with actual class name using safe approach
+        # Use replace_in_file function which handles special characters properly
+        cp /tmp/rest_api_block.$$ /tmp/rest_api_actual_block.$$
+        replace_in_file "/tmp/rest_api_actual_block.$$" "CLASS_NAME" "$CLASS"
         
         # Use grep -v to remove lines containing the REST API initialization
         grep -v -F "Initialize REST API" "$SLUG.php" | grep -v -F "rest_api = ${CLASS}_REST_API::instance" > "$SLUG.php.tmp"
