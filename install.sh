@@ -152,20 +152,20 @@ if [[ "$INTERACTIVE_MODE" == false ]]; then
     export NEWREPO="y"
     
     # Create a non-interactive version of the script
-    sed -e 's/read -r NAME/NAME="${NAME:-My Plugin}"/' \
-        -e 's/read -r FOLDER/FOLDER="${FOLDER:-./my-plugin}"/' \
-        -e 's/read -r DESCRIPTION/DESCRIPTION="${DESCRIPTION:-A modern WordPress plugin}"/' \
-        -e 's/read -r AUTHOR/AUTHOR="${AUTHOR:-Plugin Author}"/' \
-        -e 's/read -r AUTHOR_EMAIL/AUTHOR_EMAIL="${AUTHOR_EMAIL:-author@example.com}"/' \
-        -e 's/read -r PLUGIN_URI/PLUGIN_URI="${PLUGIN_URI:-}"/' \
-        -e 's/read -r GITHUB_ACTIONS/GITHUB_ACTIONS="${GITHUB_ACTIONS:-y}"/' \
-        -e 's/read -r PHPUNIT/PHPUNIT="${PHPUNIT:-y}"/' \
-        -e 's/read -r PHPCS/PHPCS="${PHPCS:-y}"/' \
-        -e 's/read -r FEATURE_API/FEATURE_API="${FEATURE_API:-y}"/' \
-        -e 's/read -r REST_API/REST_API="${REST_API:-y}"/' \
-        -e 's/read -r DOCKER_ENV/DOCKER_ENV="${DOCKER_ENV:-y}"/' \
-        -e 's/read -r AGILE_FRAMEWORK/AGILE_FRAMEWORK="${AGILE_FRAMEWORK:-y}"/' \
-        -e 's/read -r NEWREPO/NEWREPO="${NEWREPO:-y}"/' \
+    sed -e 's|read -r NAME|NAME="${NAME:-My Plugin}"|' \
+        -e 's|read -r FOLDER|FOLDER="${FOLDER:-./my-plugin}"|' \
+        -e 's|read -r DESCRIPTION|DESCRIPTION="${DESCRIPTION:-A modern WordPress plugin}"|' \
+        -e 's|read -r AUTHOR|AUTHOR="${AUTHOR:-Plugin Author}"|' \
+        -e 's|read -r AUTHOR_EMAIL|AUTHOR_EMAIL="${AUTHOR_EMAIL:-author@example.com}"|' \
+        -e 's|read -r PLUGIN_URI|PLUGIN_URI="${PLUGIN_URI:-}"|' \
+        -e 's|read -r GITHUB_ACTIONS|GITHUB_ACTIONS="${GITHUB_ACTIONS:-y}"|' \
+        -e 's|read -r PHPUNIT|PHPUNIT="${PHPUNIT:-y}"|' \
+        -e 's|read -r PHPCS|PHPCS="${PHPCS:-y}"|' \
+        -e 's|read -r FEATURE_API|FEATURE_API="${FEATURE_API:-y}"|' \
+        -e 's|read -r REST_API|REST_API="${REST_API:-y}"|' \
+        -e 's|read -r DOCKER_ENV|DOCKER_ENV="${DOCKER_ENV:-y}"|' \
+        -e 's|read -r AGILE_FRAMEWORK|AGILE_FRAMEWORK="${AGILE_FRAMEWORK:-y}"|' \
+        -e 's|read -r NEWREPO|NEWREPO="${NEWREPO:-y}"|' \
         create-plugin.sh > create-plugin-noninteractive.sh
     
     chmod +x create-plugin-noninteractive.sh
