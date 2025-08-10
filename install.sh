@@ -372,22 +372,30 @@ if [[ "$INTERACTIVE_MODE" == false ]]; then
     export AGILE_FRAMEWORK="y"
     export NEWREPO="y"
     
-    # Create a non-interactive version of the script
-    sed -e 's|read -r NAME|NAME="${NAME:-My Plugin}"|' \
-        -e 's|read -r FOLDER|FOLDER="${FOLDER:-./my-plugin}"|' \
-        -e 's|read -r DESCRIPTION|DESCRIPTION="${DESCRIPTION:-A modern WordPress plugin}"|' \
-        -e 's|read -r AUTHOR|AUTHOR="${AUTHOR:-Plugin Author}"|' \
-        -e 's|read -r AUTHOR_EMAIL|AUTHOR_EMAIL="${AUTHOR_EMAIL:-author@example.com}"|' \
-        -e 's|read -r PLUGIN_URI|PLUGIN_URI="${PLUGIN_URI:-}"|' \
-        -e 's|read -r GITHUB_ACTIONS|GITHUB_ACTIONS="${GITHUB_ACTIONS:-y}"|' \
-        -e 's|read -r PHPUNIT|PHPUNIT="${PHPUNIT:-y}"|' \
-        -e 's|read -r PHPCS|PHPCS="${PHPCS:-y}"|' \
-        -e 's|read -r FEATURE_API|FEATURE_API="${FEATURE_API:-y}"|' \
-        -e 's|read -r REST_API|REST_API="${REST_API:-y}"|' \
-        -e 's|read -r DOCKER_ENV|DOCKER_ENV="${DOCKER_ENV:-y}"|' \
-        -e 's|read -r AGILE_FRAMEWORK|AGILE_FRAMEWORK="${AGILE_FRAMEWORK:-y}"|' \
-        -e 's|read -r NEWREPO|NEWREPO="${NEWREPO:-y}"|' \
-        create-plugin.sh > create-plugin-noninteractive.sh
+    # Create a temporary script for non-interactive execution
+    cat > create-plugin-noninteractive.sh << 'EOF'
+#!/bin/bash
+
+# Set non-interactive defaults
+export NAME="${NAME:-My Plugin}"
+export FOLDER="${FOLDER:-./my-plugin}"
+export DESCRIPTION="${DESCRIPTION:-A modern WordPress plugin}"
+export AUTHOR="${AUTHOR:-Plugin Author}"
+export AUTHOR_EMAIL="${AUTHOR_EMAIL:-author@example.com}"
+export PLUGIN_URI="${PLUGIN_URI:-}"
+export GITHUB_ACTIONS="${GITHUB_ACTIONS:-y}"
+export PHPUNIT="${PHPUNIT:-y}"
+export PHPCS="${PHPCS:-y}"
+export FEATURE_API="${FEATURE_API:-y}"
+export REST_API="${REST_API:-y}"
+export DOCKER_ENV="${DOCKER_ENV:-y}"
+export AGILE_FRAMEWORK="${AGILE_FRAMEWORK:-y}"
+export NEWREPO="${NEWREPO:-y}"
+
+# Run the original script with pre-set environment variables
+# and pipe default answers to all prompts
+echo -e "$NAME\n$FOLDER\n$DESCRIPTION\n$AUTHOR\n$AUTHOR_EMAIL\n$PLUGIN_URI\n$GITHUB_ACTIONS\n$PHPUNIT\n$PHPCS\n$FEATURE_API\n$REST_API\n$DOCKER_ENV\n$AGILE_FRAMEWORK\n$NEWREPO" | ./create-plugin.sh
+EOF
     
     chmod +x create-plugin-noninteractive.sh
     ./create-plugin-noninteractive.sh
