@@ -333,7 +333,7 @@ if [[ "$PHPCS" == "y" ]]; then
 
     <!-- Check for PHP compatibility -->
     <rule ref="PHPCompatibilityWP"/>
-    <config name="testVersion" value="8.1-"/>
+    <config name="testVersion" value="8.1-8.4"/>
 </ruleset>
 EOF
     
@@ -649,8 +649,12 @@ jobs:
     
     strategy:
       matrix:
-        php: ['8.1', '8.2', '8.3']
+        php: ['8.1', '8.2', '8.3', '8.4']
         wp: ['latest', '6.0']
+        exclude:
+          # Exclude PHP 8.4 with older WordPress versions until better support
+          - php: '8.4'
+            wp: '6.0'
     
     services:
       mysql:

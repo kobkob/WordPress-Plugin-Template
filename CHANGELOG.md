@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Comprehensive documentation and contributing guidelines
 - Security best practices implementation
 - Modern PHP 8.1+ support with type declarations
+- PHP 8.4 compatibility testing in CI/CD pipeline
+- PHPCS configuration updated to test against PHP 8.1-8.4 range
 
 ### Changed
 - Complete rewrite of README with modern documentation standards

@@ -290,7 +290,7 @@ assets/
 
 The template includes a comprehensive GitHub Actions workflow that:
 
-- **Tests multiple PHP versions** (8.1, 8.2, 8.3)
+- **Tests multiple PHP versions** (8.1, 8.2, 8.3, 8.4)
 - **Tests multiple WordPress versions** (latest, 6.0)
 - **Runs coding standards checks**
 - **Executes PHPUnit tests**
@@ -401,7 +401,7 @@ This template is released under the [GPL-3.0+ License](LICENSE). Feel free to us
 
 ## 🎯 Roadmap
 
-- [ ] **PHP 8.4** compatibility testing
+- [x] **PHP 8.4** compatibility testing
 - [ ] **Block editor** integration examples
 - [ ] **REST API** endpoints template
 - [ ] **WP-CLI** command examples
