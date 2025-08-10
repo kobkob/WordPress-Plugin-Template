@@ -85,65 +85,75 @@ fi
 print_message $GREEN "✓ All dependencies found"
 echo
 
+# Function to read input (handles piped execution)
+read_input() {
+    local prompt="$1"
+    local var_name="$2"
+    local default="$3"
+    
+    # Try to read from /dev/tty first (for piped execution), fall back to stdin
+    if [ -t 0 ]; then
+        # stdin is a terminal
+        printf "$prompt"
+        read -r "$var_name"
+    elif [ -c /dev/tty ]; then
+        # stdin is not a terminal but /dev/tty is available
+        printf "$prompt" > /dev/tty
+        read -r "$var_name" < /dev/tty
+    else
+        # Neither stdin nor /dev/tty available, use default if provided
+        if [ -n "$default" ]; then
+            printf "$prompt (using default: $default)\n"
+            eval "$var_name='$default'"
+        else
+            printf "$prompt"
+            read -r "$var_name"
+        fi
+    fi
+}
+
 # Get plugin information
 while true; do
-    printf "Plugin name (e.g., 'My Awesome Plugin'): "
-    read -r NAME
+    read_input "Plugin name (e.g., 'My Awesome Plugin'): " NAME
     if validate_plugin_name "$NAME"; then
         break
     fi
 done
 
 while true; do
-    printf "Destination folder (absolute or relative path): "
-    read -r FOLDER
+    read_input "Destination folder (absolute or relative path): " FOLDER
     if validate_destination "$FOLDER"; then
         break
     fi
 done
 
-printf "Plugin description: "
-read -r DESCRIPTION
+read_input "Plugin description: " DESCRIPTION
+read_input "Author name: " AUTHOR
+read_input "Author email: " AUTHOR_EMAIL
+read_input "Plugin URI (optional): " PLUGIN_URI
 
-printf "Author name: "
-read -r AUTHOR
-
-printf "Author email: "
-read -r AUTHOR_EMAIL
-
-printf "Plugin URI (optional): "
-read -r PLUGIN_URI
-
-printf "Include GitHub Actions CI/CD (y/n) [y]: "
-read -r GITHUB_ACTIONS
+read_input "Include GitHub Actions CI/CD (y/n) [y]: " GITHUB_ACTIONS
 GITHUB_ACTIONS=${GITHUB_ACTIONS:-y}
 
-printf "Include PHPUnit tests (y/n) [y]: "
-read -r PHPUNIT
+read_input "Include PHPUnit tests (y/n) [y]: " PHPUNIT
 PHPUNIT=${PHPUNIT:-y}
 
-printf "Include WordPress Coding Standards (y/n) [y]: "
-read -r PHPCS
+read_input "Include WordPress Coding Standards (y/n) [y]: " PHPCS
 PHPCS=${PHPCS:-y}
 
-printf "Include WordPress Feature API for AI/LLM integration (y/n) [y]: "
-read -r FEATURE_API
+read_input "Include WordPress Feature API for AI/LLM integration (y/n) [y]: " FEATURE_API
 FEATURE_API=${FEATURE_API:-y}
 
-printf "Include REST API endpoints (y/n) [y]: "
-read -r REST_API
+read_input "Include REST API endpoints (y/n) [y]: " REST_API
 REST_API=${REST_API:-y}
 
-printf "Include Docker development environment (y/n) [y]: "
-read -r DOCKER_ENV
+read_input "Include Docker development environment (y/n) [y]: " DOCKER_ENV
 DOCKER_ENV=${DOCKER_ENV:-y}
 
-printf "Include Agile/XP methodology framework (y/n) [y]: "
-read -r AGILE_FRAMEWORK
+read_input "Include Agile/XP methodology framework (y/n) [y]: " AGILE_FRAMEWORK
 AGILE_FRAMEWORK=${AGILE_FRAMEWORK:-y}
 
-printf "Initialize new git repository (y/n) [y]: "
-read -r NEWREPO
+read_input "Initialize new git repository (y/n) [y]: " NEWREPO
 NEWREPO=${NEWREPO:-y}
 
 # Generate plugin variables
