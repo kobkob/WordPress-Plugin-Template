@@ -39,6 +39,9 @@ INTERACTIVE_MODE=true
 REPO_URL="https://github.com/kobkob/WordPress-Plugin-Template.git"
 TEMP_DIR=$(mktemp -d)
 
+# Store the original working directory before changing to temp
+ORIGINAL_PWD="$PWD"
+
 # Parse command line arguments
 while [[ $# -gt 0 ]]; do
     case $1 in
@@ -436,6 +439,11 @@ if [[ "$INTERACTIVE_MODE" == false ]]; then
         DESTINATION_DIR="./$(echo "$PLUGIN_NAME" | tr '[:upper:]' '[:lower:]' | tr ' ' '-')"
     fi
     
+    # Convert destination to absolute path if it's relative
+    if [[ "$DESTINATION_DIR" != /* ]]; then
+        DESTINATION_DIR="$ORIGINAL_PWD/$DESTINATION_DIR"
+    fi
+    
     print_message $YELLOW "Creating plugin '$PLUGIN_NAME' in non-interactive mode..."
     
     # Create the destination directory if it doesn't exist
@@ -446,7 +454,7 @@ if [[ "$INTERACTIVE_MODE" == false ]]; then
     export NONINTERACTIVE_FOLDER="$DESTINATION_DIR"
     export NONINTERACTIVE_DESCRIPTION="${PLUGIN_DESCRIPTION:-A modern WordPress plugin created from template}"
     export NONINTERACTIVE_AUTHOR="${PLUGIN_AUTHOR:-$(git config --global user.name 2>/dev/null || echo 'Plugin Author')}"
-    export NONINTERACTIVE_AUTHOR_EMAIL="${PLUGIN_AUTHOR_EMAIL:-$(git config --global user.email 2>/dev/null || echo 'author@example.com')}"
+    export NONINTERACTIVE_AUTHOR_EMAIL="${PLUGIN_AUTHOR_EMAIL:-$(git config --global user.email 2>/dev/null || echo 'author@email.com')}"
     export NONINTERACTIVE_PLUGIN_URI="$PLUGIN_URI"
     export NONINTERACTIVE_GITHUB_ACTIONS="$INCLUDE_GITHUB_ACTIONS"
     export NONINTERACTIVE_PHPUNIT="$INCLUDE_PHPUNIT"
@@ -463,6 +471,8 @@ if [[ "$INTERACTIVE_MODE" == false ]]; then
 else
     # Interactive mode - run the standard creation script
     print_message $YELLOW "Starting interactive plugin creation..."
+    echo
+    print_message $BLUE "Note: Plugin will be created relative to: $ORIGINAL_PWD"
     echo
     ./create-plugin.sh
 fi
