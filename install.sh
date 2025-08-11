@@ -455,7 +455,7 @@ if [[ "$INTERACTIVE_MODE" == false ]]; then
     export NONINTERACTIVE_DESCRIPTION="${PLUGIN_DESCRIPTION:-A modern WordPress plugin created from template}"
     export NONINTERACTIVE_AUTHOR="${PLUGIN_AUTHOR:-$(git config --global user.name 2>/dev/null || echo 'Plugin Author')}"
     export NONINTERACTIVE_AUTHOR_EMAIL="${PLUGIN_AUTHOR_EMAIL:-$(git config --global user.email 2>/dev/null || echo 'author@email.com')}"
-    export NONINTERACTIVE_PLUGIN_URI="$PLUGIN_URI"
+    export NONINTERACTIVE_PLUGIN_URI="${PLUGIN_URI:-}"
     export NONINTERACTIVE_GITHUB_ACTIONS="$INCLUDE_GITHUB_ACTIONS"
     export NONINTERACTIVE_PHPUNIT="$INCLUDE_PHPUNIT"
     export NONINTERACTIVE_PHPCS="$INCLUDE_PHPCS"

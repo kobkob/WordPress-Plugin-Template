@@ -95,8 +95,9 @@ read_input() {
     local env_var_name="NONINTERACTIVE_${var_name}"
     local env_value="${!env_var_name}"
     
-    if [[ -n "$env_value" ]]; then
-        # Use environment variable value
+    # If environment variable exists (even if empty), we're in non-interactive mode
+    if [[ -v "$env_var_name" ]]; then
+        # Use environment variable value (can be empty)
         printf "$prompt$env_value\n"
         eval "$var_name='$env_value'"
         return
